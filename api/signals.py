@@ -24,15 +24,6 @@ def update_participants_to_chat(sender, instance, action, **kwargs):
         chat_group = instance.chat
         chat_group.participants.set(instance.participants.all())
 
-@receiver(user_logged_in)
-def user_logged_in_handler(sender, request, user, **kwargs):
-    user.is_connected = True
-    user.save()
-
-@receiver(user_logged_out)
-def user_logged_out_handler(sender, request, user, **kwargs):
-    user.is_connected = False
-    user.save()
 
 @receiver(pre_delete, sender=User)
 def user_image_delete(sender, instance, **kwargs):
@@ -40,7 +31,7 @@ def user_image_delete(sender, instance, **kwargs):
         file_field = instance.image
         if file_field:
             print(file_field)
-            if file_field.name == 'media/profile_default.png':
+            if file_field.name == 'user_images/profile_default.png':
                 return
             file_path = file_field.path
             if os.path.isfile(file_path):
@@ -51,7 +42,7 @@ def group_image_delete(sender, instance, **kwargs):
     if hasattr(instance, 'image'):
         file_field = instance.image
         if file_field:
-            if file_field.name == 'media/group_default.jpeg':
+            if file_field.name == 'groups_images/group_default.jpeg':
                 return
             file_path = file_field.path
             if os.path.isfile(file_path):

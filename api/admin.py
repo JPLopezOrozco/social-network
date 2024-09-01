@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseAdmin
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import  Chat, ChatGroup, Group, User
+from .models import  Chat, ChatGroup, Group, User, Message, Posts, Replies
 
 class UserAdmin(BaseAdmin):
     add_form = CustomUserCreationForm
@@ -12,6 +12,7 @@ class UserAdmin(BaseAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Personal info', {'fields': ('email', 'image')}),
+        ('extra', {'fields':( 'following',)})
     )
     add_fieldsets = (
         (None, {
@@ -24,4 +25,7 @@ admin.site.register(User, UserAdmin)
 admin.site.register(Chat)
 admin.site.register(ChatGroup)
 admin.site.register(Group)
+admin.site.register(Message)
+admin.site.register(Posts)
+admin.site.register(Replies)
 

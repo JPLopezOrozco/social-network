@@ -1,0 +1,63 @@
+body{
+    background-color: #E0FFD6;
+    font-family: 'montserrat',sans-serif;
+}
+.container-page{
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.form{
+    width: 80%;
+    padding: 15%;
+}
+.post-container{
+    width: 50%;
+    border: 1px solid #6610f2;
+}
+.nav-bar{
+    background-color: #6610f2;
+}
+.nav-bar a{
+    color: #ffff;
+}
+.nav-bar p{
+    color: #ffff;
+}
+.nav-bar a:hover{
+    color: #f5f5f5;
+}
+.nav-bar a:focus{
+    color: #f5f5f5;
+}
+.nav-bar p:hover{
+    color: #f5f5f5;
+}
+.submit-button{
+    background-color: #6610f2;
+    color: #ffff;
+}
+.follow-button{
+    background: #6610f2;
+    color: #ffff;
+}
+.like{
+    cursor: pointer;
+}
+.like-heart{
+    color: red;
+}
+#body{
+    background-color: #E0FFD6;
+    border: none;
+    resize: none;
+}
+#body:focus{
+    border:none;
+    box-shadow: none;
+}
+.post-img{
+    border-radius: 20px;
+    width: 80%;
+}

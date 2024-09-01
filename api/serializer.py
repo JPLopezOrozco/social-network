@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from .models import Group, ChatGroup, Chat, User
+from .models import Group, ChatGroup, Chat, User, Posts
 
 class UserSerializer(serializers.ModelSerializer):
-    
+    followers = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False)
     class Meta:
         model = User
-        fields = 'id', 'username', 'password', 'email','first_name', 'last_name', 'is_connected', 'following'
+        fields = 'id', 'username', 'password', 'email','first_name', 'last_name', 'is_connected', 'following', 'followers'
     def create(self, validated_data):
            user = User.objects.create(
                username=validated_data['username'],
@@ -16,22 +16,9 @@ class UserSerializer(serializers.ModelSerializer):
            return user
 
 class GroupSerializer(serializers.ModelSerializer):
-    num_participants = serializers.SerializerMethodField()
     class Meta:
         model = Group
-        exclude = ('participants', 'image')
-    
-    def get_num_participants(self, obj):
-        if hasattr(obj, 'num_participants'):
-           return obj.num_participants
-        return None 
-    
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        num_participants = self.context.get('num_participants')
-        if not num_participants:
-            data.pop('num_participants', None)
-        return data
+        exclude = ('image',)
         
 
 class ChatGroupSerializer(serializers.ModelSerializer):
@@ -42,4 +29,10 @@ class ChatGroupSerializer(serializers.ModelSerializer):
 class ChatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chat
+        fields = '__all__'
+        
+class PostsSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(required=False, allow_null=True, use_url=True)
+    class Meta:
+        model = Posts
         fields = '__all__'

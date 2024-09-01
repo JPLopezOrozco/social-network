@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 class User(AbstractUser):
     following = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
     is_connected = models.BooleanField(default=False)
-    image = models.ImageField(blank=True, default='media/profile_default.png',upload_to='media')
+    image = models.ImageField(blank=True, default='user_images/profile_default.png',upload_to='user_images')
     
     def __str__(self):
         return self.username
@@ -16,10 +16,10 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         if self.id:
             image = get_object_or_404(User, id=self.id)
-            if image.image != self.image and image.image != 'media/profile_default.png':
+            if image.image != self.image and image.image != 'user_images/profile_default.png':
                 image.image.delete(save=False)
             if not self.image:
-                self.image = 'media/profile_default.png'
+                self.image = 'user_images/profile_default.png'
         super(User, self).save(*args, **kwargs)
     
     
@@ -29,7 +29,7 @@ class Group(models.Model):
     description = models.TextField(max_length=255)
     owner = models.ForeignKey(User, related_name='owner', on_delete=models.CASCADE)
     participants = models.ManyToManyField(User, related_name='user_groups')
-    image = models.ImageField(blank=True, default='media/group_default.jpeg' , upload_to='media')
+    image = models.ImageField(blank=True, default='groups_images/group_default.jpeg' , upload_to='groups_images')
     
     def __str__(self):
         return self.name
@@ -37,10 +37,10 @@ class Group(models.Model):
     def save(self, *args, **kwargs):
         if self.id:
             image = get_object_or_404(Group, id=self.id)
-            if image.image != self.image and image.image != 'media/group_default.jpeg':
+            if image.image != self.image and image.image != 'groups_/group_default.jpeg':
                 image.image.delete(save=False)
             if not self.image:
-                self.image = 'media/group_default.jpeg'
+                self.image = 'groups/group_default.jpeg'
         super(Group, self).save(*args, **kwargs)
     
 
@@ -70,11 +70,27 @@ class Chat(models.Model):
         super().save(*args, **kwargs)
         
         
-# class Message(models.Model):
-#     chat = models.ForeignKey(Chat, related_name='messages', on_delete=models.CASCADE)
-#     sender = models.ForeignKey(User, related_name='messages', on_delete=models.CASCADE)
-#     content = models.TextField()
-#     timestamp = models.DateTimeField(auto_now_add=True)
+class Message(models.Model):
+    chat = models.ForeignKey(Chat, related_name='messages', on_delete=models.CASCADE)
+    sender = models.ForeignKey(User, related_name='messages', on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
 
-#     def __str__(self):
-#         return f"Message from {self.sender.username} in chat {self.chat.id}"
+    def __str__(self):
+        return f"Message from {self.sender.username} in chat {self.chat.id}"
+
+class Posts(models.Model):
+    user = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    likes = models.ManyToManyField(User, related_name='likes', blank=True)
+    
+    def __str__(self):
+        return f'{self.user}, {self.created_at}'
+
+class Replies(models.Model):
+    user = models.ForeignKey(User, related_name='replies', on_delete=models.CASCADE)
+    post = models.ForeignKey(Posts, related_name='replies', on_delete=models.CASCADE)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
